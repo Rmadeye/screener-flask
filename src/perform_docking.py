@@ -27,7 +27,7 @@ class VinaDocker:
         print("Sizes of docking grid are as follows:"
               "x: {}, y: {}, z: {}".format(cent_x, cent_y, cent_z))
         os.system(
-            'vina --receptor {} --ligand {} --center_x {} --center_y {} --center_z {} --size_x {} --size_y {} --size_z {} --log {} --out {}'.format(
+            'vina --receptor {} --ligand {} --center_x {} --center_y {} --center_z {} --size_x {} --size_y {} --size_z {} --log {} --out {} --cpu 1'.format(
                 './workdir/' + self.protein, './workdir/' + self.ligand,
                 cent_x,
                 cent_y,
