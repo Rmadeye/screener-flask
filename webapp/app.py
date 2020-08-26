@@ -14,16 +14,20 @@ def form():
 def dock():
     requested_protein_id = request.form.get('protein_id')
     requested_ligand = request.form.get('ligand_id')
-    try:
-        execute(requested_protein_id, requested_ligand)
+    if execute(requested_protein_id, requested_ligand) == 1:
         return send_file(os.path.dirname(app.instance_path) + '/results.zip', as_attachment=True)
-    except:
+    else:
         return render_template("error.html")
 
 
 def execute(protein_id, ligand_id):
     utils.Utilities().clean()
     protein_prep.ProteinPreparer(protein_id).prepare_protein()  # prepare protein
-    ligand_prep.LigandPreparer(ligand_id).prepare_ligand()  # prepare ligand
-    perform_docking.VinaDocker(protein_id, ligand_id).prepare_docking_grid_and_dock()
-    return shutil.make_archive('results', 'zip', './result/')
+    if os.stat('./workdir/pdb{}.ent'.format(protein_id)).st_size > 750000 :
+        render_template("error.html"), utils.Utilities().clean()
+        return 0
+    else:
+        ligand_prep.LigandPreparer(ligand_id).prepare_ligand()  # prepare ligand
+        perform_docking.VinaDocker(protein_id, ligand_id).prepare_docking_grid_and_dock()
+        shutil.make_archive('results', 'zip', './result/')
+        return 1
