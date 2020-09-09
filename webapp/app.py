@@ -12,8 +12,8 @@ def form():
 
 @app.route('/dock', methods=["POST"])
 def dock():
-    requested_protein_id = request.form.get('protein_id')
-    requested_ligand = request.form.get('ligand_id')
+    requested_protein_id = request.form.get('protein_id').lower()
+    requested_ligand = request.form.get('ligand_id').lower()
     if execute(requested_protein_id, requested_ligand) == 1:
         return send_file(os.path.dirname(app.instance_path) + '/results.zip', as_attachment=True)
     else:
