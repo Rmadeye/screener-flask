@@ -6,7 +6,7 @@ class VinaDocker:
 
     def __init__(self, protein_pdbqt: str, ligand_pdbqt: str):
         self.protein = protein_pdbqt + '.pdbqt'
-        self.ligand = ligand_pdbqt + '.pdbqt'
+        self.ligand = ligand_pdbqt + 'prep.pdbqt'
 
     def prepare_docking_grid_and_dock(self):
         df = PandasPdb().read_pdb('./workdir/' + self.protein).df['ATOM']  # opens protein to calculate grid
