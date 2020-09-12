@@ -35,7 +35,7 @@ ul.top {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333;
+  background-color: cadetblue;
 }
 
 li {
@@ -44,7 +44,7 @@ li {
 
 li a {
   display: block;
-  color: black;
+  color: white;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -59,28 +59,21 @@ li b {
 }
 
 li a:hover:not(.active) {
-  background-color: #6a5acd;
+  background-color: azure;
 }
 
 .active {
   background-color: #4CAF50;
 }
         body {
-            background-image: url("static/background2.png");
+            background-color: #F7FAF4; # dac kolor
             background-repeat:no-repeat;
             background-size:cover;
         }
-      aside {
-  float: left;
-  padding: 20px;
-  width: 20%;
-  height: 100%;
-  background-color: #f1f1f1;
-}
 
 </style>
 <head>
-    <title>Perform screen docking</title>
+    <title>Laboratory of Biomaterials website</title>
 </head>
 <body>
 <ul class="top">
@@ -95,6 +88,7 @@ li a:hover:not(.active) {
     </div>
 </section>
 
-{%block content%} {% endblock %}
+{%block content%}
+{% endblock %}
 </body>
 </html>

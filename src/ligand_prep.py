@@ -3,7 +3,7 @@ import urllib.request
 import os, shutil
 
 # set preparation pathways
-prepare_ligand_path = '~/MGLTools-1.5.6/mgltools_x86_64Linux2_1.5.6/bin/pythonsh ~/MGLTools-1.5.6/mgltools_x86_64Linux2_1.5.6/MGLToolsPckgs/AutoDockTools/Utilities24/prepare_ligand4.py -A bonds_hydrogens -U nphs_lps -l'
+prepare_ligand_path = '~/MGLTools-1.5.6/bin/pythonsh ~/MGLTools-1.5.6/MGLToolsPckgs/AutoDockTools/Utilities24/prepare_ligand4.py -A bonds_hydrogens -U nphs_lps -l'
 
 
 class LigandPreparer:

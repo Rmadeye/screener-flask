@@ -1,20 +1,20 @@
+
 {% extends "base.html" %}
+
 {% block  content  %}
 
 
         <center>
-            <h1>Perform screen docking</h1>
-            <form class="dock" action="/dock" method="post" enctype="multipart/form-data">
-                <label for="protein_id">Protein ID</label>
-                <input name="protein_id" id = "protein_id">
-                <label for="ligand_id">Ligand ID from PubChem</label>
-                <input name="ligand_id" id = "ligand_id" />
-                <hr/>
-                <input class="dock" type="submit" >
+            <h1>Welcome to Laboratory of Biomaterials applications website</h1>
+             <img src="../static/cover.png" alt="cover" width="600">
+            <form class="Space-screening docking" action="/docking" method="get" enctype="multipart/form-data">
+                <input class = "button1" type="submit" value="Space-screening docking">
             </form>
-                        <h2>It will take some time - do not refresh or close the website. Go grab a coffee</h2>
-            <h3>Once the job is done, popup with results will appear</h3>
+            <form class="Merge_page" action="/merger" method="get" enctype="multipart/form-data">
+                <input class = "button1" type="submit" value="Protein-Ligand merger">
+            </form>
         </center>
 
 
 {% endblock %}
+
