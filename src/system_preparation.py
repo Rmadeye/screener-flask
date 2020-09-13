@@ -4,11 +4,12 @@ from src.conversion import Converter
 
 
 class PDBQTprep:
-    def __init__(self, protein_file: str, flex_file: str):
+    def __init__(self, protein_file: str, flex_file: str, tmpdir: str):
         self.prot = protein_file
         self.flex = flex_file
         self.protname = os.path.basename(self.prot)
         self.flexname = os.path.basename(self.flex)
+        self.tmpdir = tmpdir
 
     def files_preparation(self):
         def prepare_ligand():
@@ -17,7 +18,7 @@ class PDBQTprep:
             flex_df.df['ATOM']['segment_id'].replace(r'.{1,}', '', regex=True, inplace=True)
             flex_df.df['ATOM']['blank_4'].replace(r'.{1,}', '', regex=True, inplace=True)  # clean pdbqt inheritance
             flex_df.df['ATOM'] = flex_df.df['ATOM'][flex_df.df['ATOM']['element_symbol'] != 'H']  # deprotonate
-            return flex_df.to_pdb(path=os.getcwd() + '/{}-prep.pdb'.format(self.flexname.split('.')[0]),
+            return flex_df.to_pdb(path=self.tmpdir + '/{}-prep.pdb'.format(self.flexname.split('.')[0]),
                                   records=['ATOM', 'HETATM'],
                                   gz=False,
                                   append_newline=True)
@@ -35,14 +36,16 @@ class PDBQTprep:
             prot_df.df['ATOM']['residue_name'].replace(to_replace='GLX', value='GLN', inplace=True)
             prot_df.df['ATOM']['residue_name'].replace(to_replace='GLH', value='GLN', inplace=True)
             prot_df.df['ATOM']['residue_name'].replace(to_replace='LYN', value='LYS', inplace=True)
-
-            return prot_df.to_pdb(path=os.getcwd() + '/{}-dehyd.pdb'.format(self.protname.split('.')[0]),
+            return prot_df.to_pdb(path=self.tmpdir + '/{}-dehyd.pdb'.format(self.protname.split('.')[0]),
                                   records=['ATOM', 'HETATM'],
                                   gz=False,
                                   append_newline=True)
 
 
 
-        return prepare_protein(), prepare_ligand(), Converter(os.getcwd() + '/{}-dehyd.pdb'.format(self.protname.split('.')[0]),
-                         os.getcwd() + '/{}-prep.pdb'.format(self.flexname.split('.')[0])).convert()
+        return prepare_protein(), prepare_ligand(), Converter(self.tmpdir + '/{}-dehyd.pdb'.format(
+            self.protname.split('.')[0]
+        ),self.tmpdir + '/{}-prep.pdb'.format(
+            self.flexname.split('.')[0]
+        ), self.tmpdir).convert()
 

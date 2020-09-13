@@ -2,22 +2,20 @@ from src import ligand_prep, protein_prep, perform_docking
 import os, shutil
 
 class DockerScript:
-    def __init__(self, protein_id, ligand_id):
+    def __init__(self, protein_id, ligand_id, tmpdir):
         self.protein_id = protein_id
         self.ligand_id = ligand_id
+        self.tmpdir = tmpdir
 
     def execute(self):
-        Utilities().clean_merger()
-        protein_prep.ProteinPreparer(self.protein_id).prepare_protein()  # prepare protein
-        if os.stat('./workdir/pdb{}.ent'.format(self.protein_id)).st_size > 750000 :
-            # render_template("error.html"), utils.Utilities().clean()
+        protein_prep.ProteinPreparer(self.protein_id, self.tmpdir).prepare_protein()  # prepare protein
+        if os.stat(self.tmpdir + '/pdb{}.ent'.format(self.protein_id)).st_size > 750000:
             return 0
         else:
-            ligand_prep.LigandPreparer(self.ligand_id).prepare_ligand()  # prepare ligand
-            perform_docking.VinaDocker(self.protein_id, self.ligand_id).prepare_docking_grid_and_dock()
-            shutil.make_archive('results', 'zip', './result/')
+            ligand_prep.LigandPreparer(self.ligand_id, self.tmpdir).prepare_ligand()  # prepare ligand
+            perform_docking.VinaDocker(self.protein_id, self.ligand_id, self.tmpdir).prepare_docking_grid_and_dock()
+            shutil.make_archive(self.tmpdir+'/result', 'zip', self.tmpdir + '/results/')
             return 1
-
 
 class Utilities:
     def __init__(self):

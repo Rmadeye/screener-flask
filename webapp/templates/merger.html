@@ -1,17 +1,57 @@
-{% extends "base.html" %}
-{% block  content  %}
 
+{% extends "base.html" %}
+
+{% block  content  %}
+<style>
+      aside {
+  float: left;
+  padding: 20px;
+  width: 20%;
+  height: 100%;
+  background-color: #f1f1f1;
+}
+</style>
+<section>
+  <aside>
+    <center>
+    <h3>Tips</h3>
+        </center>
+    <p>-> Remove all hydrogens and heteroatoms from the protein PDB file</p>
+    <p>-> Remember - only first (best) score from ligand pdbqt file is extracted</p>
+      <p>-> For further processing of the result enter Protein-Ligand Interaction Profiler (PLIP) web service:
+      <a href="https://projects.biotec.tu-dresden.de/plip-web/plip">PLIP</a>
+      </p>
+
+        <center>
+      <h3>Exemplary files</h3>
+            </center>
+            <form class="ligand" action="/send_lig" method="get" enctype="multipart/form-data">
+                <label >Ligand</label>
+                <input class = "ligand" type="submit">
+            </form>
+            <form class="protein" action="/send_prot" method="get" enctype="multipart/form-data">
+                <label >Protein</label>
+                <input class = "protein" type="submit">
+            </form>
+  </aside>
+</section>
 
         <center>
             <h1>Application transforming flexible PDB and rigid protein PDB files</h1>
+                            <hr/>
+
             <form class="merger" action="/merge" method="post" enctype="multipart/form-data">
                 <label for="rigid">Rigid Protein PDB file</label>
+
                 <input type="file" name="rigid_pdb" id = "rigid">
+                                <hr/>
+
                 <label for="rigid">Ligand with residues PDB file</label>
                 <input type="file" name="flex_pdb" id = "flex" />
                 <hr/>
                 <input class="merger" type="submit" >
             </form>
         </center>
+
 
 {% endblock %}

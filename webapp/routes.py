@@ -2,7 +2,7 @@ from webapp import app
 from flask import Flask, request, render_template, send_file
 from src.utils import DockerScript, Utilities
 from src import decode_files
-import os
+import os, tempfile
 
 @app.route('/')
 def form():
@@ -16,11 +16,11 @@ def docking_template():
 def dock():
     requested_protein_id = request.form.get('protein_id').lower()
     requested_ligand = request.form.get('ligand_id').lower()
-
-    if DockerScript(requested_protein_id, requested_ligand).execute() == 1:
-        return send_file(os.path.dirname(app.instance_path) + '/results.zip', as_attachment=True)
-    else:
-        return render_template("error.html")
+    with tempfile.TemporaryDirectory(dir = os.getcwd()) as tmpdir:
+        if DockerScript(requested_protein_id, requested_ligand, tmpdir).execute() == 1:
+            return send_file(tmpdir + '/result.zip', as_attachment=True)
+        else:
+            return render_template("error.html")
 
 @app.route('/merger')
 def merger():
@@ -38,10 +38,10 @@ def merge():
         return render_template("no_file.html")
     if utilities.check_extensions(requested_rigid.filename):
         if utilities.check_extensions(requested_flex.filename):
-            dfprep = decode_files.Decoder()
-            dfprep.bytes_to_pdb(requested_rigid, requested_flex)
-            return send_file(os.path.dirname(app.instance_path) + '/workdir/result.pdb', as_attachment=True), \
-                   utilities.clean_merger()
+            with tempfile.TemporaryDirectory(dir = os.getcwd()) as tmpdir:
+                dfprep = decode_files.Decoder(requested_rigid, requested_flex, tmpdir)
+                dfprep.bytes_to_pdb()
+                return send_file(tmpdir + '/result.pdb', as_attachment=True)
         else:
             return render_template("flex_error.html")
     else:
