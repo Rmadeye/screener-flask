@@ -1,24 +1,24 @@
-import re, os
 from src.system_preparation import PDBQTprep
-from webapp import app
 
 class Decoder:
-    def __init__(self):
-        pass
+    def __init__(self, protein, flex, tmpdir):
+        self.protein = protein
+        self.flex = flex
+        self.tmpdir = tmpdir
 
-    def bytes_to_pdb(self, rigidfile: str, flexfile: str) -> str:
+    def bytes_to_pdb(self) -> str:
 
-        for line in flexfile:
+        for line in self.flex:
             strline = str(line, 'utf-8')
-            with open('./workdir/'+'flex.tmp.pdb', 'a+') as clnout:
+            with open(self.tmpdir+'/flex.tmp.pdb', 'a+') as clnout:
                 clnout.write(strline)
 
-        for line in rigidfile:
+        for line in self.protein:
             strline = str(line, 'utf-8')
-            with open('./workdir/'+'rigid.tmp.pdb', 'a+') as rgout:
+            with open(self.tmpdir+'/rigid.tmp.pdb', 'a+') as rgout:
                 rgout.write(strline)
 
-        dfp = PDBQTprep('./workdir/rigid.tmp.pdb',
-                                    './workdir/flex.tmp.pdb')
+        dfp = PDBQTprep(self.tmpdir+'/rigid.tmp.pdb',
+                                    self.tmpdir+'/flex.tmp.pdb', self.tmpdir)
 
         return dfp.files_preparation()

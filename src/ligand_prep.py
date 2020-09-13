@@ -8,28 +8,21 @@ prepare_ligand_path = '~/MGLTools-1.5.6/bin/pythonsh ~/MGLTools-1.5.6/MGLToolsPc
 
 class LigandPreparer:
 
-    def __init__(self, ligand_file: str):
+    def __init__(self, ligand_file: str, tmpdir: str):
         self.ligand = ligand_file
+        self.tmpdir = tmpdir
 
     def prepare_ligand(self):
         url = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{}/SDF'.format(self.ligand)
-        urllib.request.urlretrieve(url, '{}'.format(self.ligand + '.sdf'))  # downloads the file	
+        urllib.request.urlretrieve(url, self.tmpdir + '/{}'.format(self.ligand + '.sdf'))  # downloads the file
         print("Generating 3D coordinates...")
         os.system(
-            'obabel {} -O {} --gen3d'.format(self.ligand + '.sdf', self.ligand + 'prep.pdb'))  # generates 3d coords
-        print("Minimizing...")
+            'obabel {} -O {} --gen3d'.format(
+                self.tmpdir + '/' + self.ligand + '.sdf', self.tmpdir + '/' + self.ligand + 'prep.pdb'
+            ))  # generates 3d coords
+        # print("Minimizing...")
         #os.system('obminimize -ff GAFF {} > {}'.format(self.ligand + 'prep.pdb',
         #                                               self.ligand + '.pdb'))  # minimizes using GAFF
         print("***Setting input for ligand preparation***")
-        os.system(prepare_ligand_path + '{}'.format(self.ligand + 'prep.pdb'))  # adds charges, sets rotatable bonds
-        try:
-            os.remove(self.ligand + '.sdf')
-            shutil.move(self.ligand + 'prep.pdbqt', './workdir/')
-            os.remove(self.ligand + 'prep.pdb')
-            #os.remove(self.ligand + '.pdb')
-        except Exception as e:
-            print(e)
-            os.remove(self.ligand + '.sdf')
-            os.remove(self.ligand + '.pdb')
-            #os.remove(self.ligand + 'prep.pdb')
-            os.remove(self.ligand + '.pdbqt')
+        os.system(prepare_ligand_path + '{}'.format(self.tmpdir + '/' + self.ligand + 'prep.pdb'))  # adds charges, sets rotatable bonds
+        shutil.move(self.ligand + 'prep.pdbqt', self.tmpdir)

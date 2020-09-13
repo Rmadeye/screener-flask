@@ -4,12 +4,14 @@ from biopandas.pdb import PandasPdb
 
 class VinaDocker:
 
-    def __init__(self, protein_pdbqt: str, ligand_pdbqt: str):
+    def __init__(self, protein_pdbqt: str, ligand_pdbqt: str, tmpdir: str):
         self.protein = protein_pdbqt + '.pdbqt'
         self.ligand = ligand_pdbqt + 'prep.pdbqt'
+        self.tmpdir = tmpdir
+        os.mkdir(self.tmpdir + '/results')
 
     def prepare_docking_grid_and_dock(self):
-        df = PandasPdb().read_pdb('./workdir/' + self.protein).df['ATOM']  # opens protein to calculate grid
+        df = PandasPdb().read_pdb(self.tmpdir + '/' + self.protein).df['ATOM']  # opens protein to calculate grid
         minx = df['x_coord'].min()
         maxx = df['x_coord'].max()
         cent_x = round((maxx + minx) / 2, 2)
@@ -28,14 +30,15 @@ class VinaDocker:
               "x: {}, y: {}, z: {}".format(cent_x, cent_y, cent_z))
         os.system(
             'vina --receptor {} --ligand {} --center_x {} --center_y {} --center_z {} --size_x {} --size_y {} --size_z {} --log {} --out {} --cpu 1'.format(
-                './workdir/' + self.protein, './workdir/' + self.ligand,
+                self.tmpdir +'/' + self.protein, self.tmpdir +'/' + self.ligand,
                 cent_x,
                 cent_y,
                 cent_z,
                 size_x,
                 size_y,
                 size_z,
-                'result.log',
-                'result.pdbqt'))
-        shutil.move('result.log', './result/')
-        shutil.move('result.pdbqt', './result/')
+                self.tmpdir + '/result.log',
+                self.tmpdir + '/result.pdbqt'))
+        shutil.move(self.tmpdir + '/result.log', self.tmpdir+'/results')
+        shutil.move(self.tmpdir + '/result.pdbqt', self.tmpdir+'/results')
+

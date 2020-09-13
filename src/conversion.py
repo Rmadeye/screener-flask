@@ -7,9 +7,10 @@ import os
 
 
 class Converter:
-    def __init__(self, protein_file, flex_file):
+    def __init__(self, protein_file, flex_file, tmpdir):
         self.protein = protein_file
         self.flex = flex_file
+        self.tmpdir = tmpdir
 
     def convert(self):
 
@@ -71,9 +72,9 @@ class Converter:
                 os.path.basename(self.protein).split('.')[0] + '-' + (
             os.path.basename(self.flex)).split('.')[0] + '.pdb'
         )
-
-        return prot_df.to_pdb(path=os.getcwd() + '/workdir/result.pdb',
+        print("*******", "Saving to:", self.tmpdir + '/result.pdb')
+        return prot_df.to_pdb(path=self.tmpdir + '/result.pdb',
                               records=['ATOM', 'OTHERS'],
                               gz=False,
-                              append_newline=True), os.remove(self.protein), os.remove(self.flex)#, \
+                              append_newline=True)#, os.remove(self.protein), os.remove(self.flex)#, \
                #ObtainInteractionsFromComplex(output_name).connect_retrieve()
